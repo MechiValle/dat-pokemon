@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useGenerationPool } from "@/hooks/useGenerationPool";
 import { GameMode } from "@/types/gameMode";
-import { selectQuickPool } from "@/lib/quickRounds";
+import { selectQuickPool, DEFAULT_QUICK_ROUND_COUNT, QuickRoundCount } from "@/lib/quickRounds";
 import WelcomeScreen from "@/components/WelcomeScreen";
 import LoadingScreen from "@/components/LoadingScreen";
 import GameScreen from "@/components/GameScreen";
@@ -20,15 +20,17 @@ interface MatchResult {
 export default function Home() {
   const { t } = useTranslation();
   const { status, pokemon, loaded, total, load, reset } = useGenerationPool();
-  const [mode, setMode] = useState<GameMode>("full");
+  const [mode, setMode] = useState<GameMode>("quick");
+  const [roundCount, setRoundCount] = useState<QuickRoundCount>(DEFAULT_QUICK_ROUND_COUNT);
   const [result, setResult] = useState<MatchResult | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
 
   const handleStart = useCallback(
-    (generations: number[], selectedMode: GameMode) => {
+    (generations: number[], selectedMode: GameMode, selectedRoundCount: QuickRoundCount) => {
       setResult(null);
       setIsGameOver(false);
       setMode(selectedMode);
+      setRoundCount(selectedRoundCount);
       load(generations);
     },
     [load]
@@ -55,7 +57,7 @@ export default function Home() {
     window.location.reload();
   }, []);
 
-  const activePool = mode === "quick" ? selectQuickPool(pokemon) : pokemon;
+  const activePool = mode === "quick" ? selectQuickPool(pokemon, roundCount) : pokemon;
 
   return (
     <main className="min-h-screen bg-page-light dark:bg-page-dark flex items-center justify-center px-4">
