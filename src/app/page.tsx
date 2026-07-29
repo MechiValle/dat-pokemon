@@ -1,65 +1,69 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import { useGenerationPool } from "@/hooks/useGenerationPool";
+import WelcomeScreen from "@/components/WelcomeScreen";
+import LoadingScreen from "@/components/LoadingScreen";
+import GameScreen from "@/components/GameScreen";
+import ResultsScreen from "@/components/ResultsScreen";
+
+interface MatchResult {
+  correctCount: number;
+  total: number;
+  elapsedSeconds: number;
+}
 
 export default function Home() {
+  const { t } = useTranslation();
+  const { status, pokemon, loaded, total, load, reset } = useGenerationPool();
+  const [result, setResult] = useState<MatchResult | null>(null);
+
+  const handleStart = useCallback((generations: number[]) => {
+    setResult(null);
+    load(generations);
+  }, [load]);
+
+  const handleFinish = useCallback((correctCount: number, matchTotal: number, elapsedSeconds: number) => {
+    setResult({ correctCount, total: matchTotal, elapsedSeconds });
+  }, []);
+
+  const handleBackToMenu = useCallback(() => {
+    setResult(null);
+    reset();
+  }, [reset]);
+
+  const handlePlayAgain = useCallback(() => {
+    window.location.reload();
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="min-h-screen bg-page-light dark:bg-page-dark flex items-center justify-center px-4">
+      {status === "idle" && <WelcomeScreen onStart={handleStart} />}
+      {status === "loading" && <LoadingScreen loaded={loaded} total={total} />}
+      {status === "error" && (
+        <div className="flex flex-col items-center gap-4 text-bezel dark:text-white">
+          <p className="text-sm">{t("error.message")}</p>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="rounded-lg bg-accent text-bezel font-bold text-sm px-6 py-2.5"
+          >
+            {t("error.retry")}
+          </button>
+        </div>
+      )}
+      {status === "ready" && !result && (
+        <GameScreen pool={pokemon} onFinish={handleFinish} onBackToMenu={handleBackToMenu} />
+      )}
+      {status === "ready" && result && (
+        <ResultsScreen
+          correctCount={result.correctCount}
+          total={result.total}
+          elapsedSeconds={result.elapsedSeconds}
+          onPlayAgain={handlePlayAgain}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      )}
+    </main>
   );
 }

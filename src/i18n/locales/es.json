@@ -1,0 +1,36 @@
+{
+  "header": {
+    "title": "¿Quién es ese Pokémon?"
+  },
+  "welcome": {
+    "allGenerations": "Todas las generaciones",
+    "generation": "Gen {{number}}",
+    "start": "Empezar"
+  },
+  "loading": {
+    "label": "Cargando Pokémon…"
+  },
+  "game": {
+    "placeholder": "Escribí un nombre...",
+    "pass": "Pasar",
+    "silhouetteAlt": "Silueta de Pokémon misterioso",
+    "backToMenu": "Volver al menú"
+  },
+  "results": {
+    "correct": "correctas",
+    "time": "tiempo",
+    "playAgain": "Jugar de nuevo"
+  },
+  "error": {
+    "message": "Algo salió mal cargando los datos de Pokémon.",
+    "retry": "Reintentar"
+  },
+  "tiers": {
+    "tier1": { "title": "¿Ese es Pikachu?", "description": "Nivel de conocimiento sobre Pokémon: mi mamá." },
+    "tier2": { "title": "Cazabichos", "description": "Tu entrenamiento acaba de comenzar, seguí practicando." },
+    "tier3": { "title": "Ash Ketchum", "description": "Nada mal para un joven de pueblo Paleta." },
+    "tier4": { "title": "Líder de Gimnasio", "description": "¿Sólido conocimiento o buena memoria? De todos modos, la rompiste." },
+    "tier5": { "title": "Alto Mando", "description": "En la mesa chica del comité global de fijaciones absurdas." },
+    "tier6": { "title": "Campeón de la Liga", "description": "¡Viva la neurodiversidad!" }
+  }
+}

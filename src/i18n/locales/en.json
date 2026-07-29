@@ -1,0 +1,36 @@
+{
+  "header": {
+    "title": "Who's that Pokémon?"
+  },
+  "welcome": {
+    "allGenerations": "All generations",
+    "generation": "Gen {{number}}",
+    "start": "Start"
+  },
+  "loading": {
+    "label": "Loading Pokémon…"
+  },
+  "game": {
+    "placeholder": "Type a name...",
+    "pass": "Pass",
+    "silhouetteAlt": "Mystery Pokémon silhouette",
+    "backToMenu": "Back to menu"
+  },
+  "results": {
+    "correct": "correct",
+    "time": "time",
+    "playAgain": "Play again"
+  },
+  "error": {
+    "message": "Something went wrong loading Pokémon data.",
+    "retry": "Try again"
+  },
+  "tiers": {
+    "tier1": { "title": "Is that Pikachu?", "description": "Every silhouette looks familiar... somehow." },
+    "tier2": { "title": "Route Explorer", "description": "You've met quite a few Pokémon on your journey, but many species still remain a mystery." },
+    "tier3": { "title": "Gym Challenger", "description": "You're making progress. The Pokémon world is starting to make sense." },
+    "tier4": { "title": "Veteran Trainer", "description": "You've battled through plenty of regions and it shows." },
+    "tier5": { "title": "Walking Pokedex", "description": "Your Pokémon knowledge is impressive. Only the most obscure species can still surprise you." },
+    "tier6": { "title": "Pokemon Professor", "description": "Neurodiverse, I see. Your knowledge of Pokémon is legendary!" }
+  }
+}

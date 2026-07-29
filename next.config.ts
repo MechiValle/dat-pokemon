@@ -1,7 +1,10 @@
-import type { NextConfig } from "next";
+const isGithubActions = process.env.GITHUB_ACTIONS === "true";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
+  output: "export",
+  basePath: isGithubActions ? "/dat-pokemon" : "",
+  images: { unoptimized: true },
+  devIndicators: false,
 };
 
 export default nextConfig;
