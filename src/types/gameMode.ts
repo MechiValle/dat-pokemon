@@ -1,0 +1,1 @@
+export type GameMode = "full" | "quick";

@@ -2,11 +2,6 @@
   "header": {
     "title": "¿Quién es ese Pokémon?"
   },
-  "welcome": {
-    "allGenerations": "Todas las generaciones",
-    "generation": "Gen {{number}}",
-    "start": "Empezar"
-  },
   "loading": {
     "label": "Cargando Pokémon…"
   },
@@ -32,5 +27,16 @@
     "tier4": { "title": "Líder de Gimnasio", "description": "¿Sólido conocimiento o buena memoria? De todos modos, la rompiste." },
     "tier5": { "title": "Alto Mando", "description": "En la mesa chica del comité global de fijaciones absurdas." },
     "tier6": { "title": "Campeón de la Liga", "description": "¡Viva la neurodiversidad!" }
+  },
+  "welcome": {
+  "allGenerations": "Todas las generaciones",
+  "generation": "Gen {{number}}",
+  "start": "Empezar",
+  "fullMode": "Pokédex completa",
+  "quickMode": "Rondas rápidas"
+},
+  "gameOver": {
+    "title": "Game Over",
+    "subtitle": "Más rápido la próxima vez"
   }
 }

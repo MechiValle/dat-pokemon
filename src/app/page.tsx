@@ -3,10 +3,13 @@
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useGenerationPool } from "@/hooks/useGenerationPool";
+import { GameMode } from "@/types/gameMode";
+import { selectQuickPool } from "@/lib/quickRounds";
 import WelcomeScreen from "@/components/WelcomeScreen";
 import LoadingScreen from "@/components/LoadingScreen";
 import GameScreen from "@/components/GameScreen";
 import ResultsScreen from "@/components/ResultsScreen";
+import GameOverScreen from "@/components/GameOverScreen";
 
 interface MatchResult {
   correctCount: number;
@@ -17,25 +20,42 @@ interface MatchResult {
 export default function Home() {
   const { t } = useTranslation();
   const { status, pokemon, loaded, total, load, reset } = useGenerationPool();
+  const [mode, setMode] = useState<GameMode>("full");
   const [result, setResult] = useState<MatchResult | null>(null);
+  const [isGameOver, setIsGameOver] = useState(false);
 
-  const handleStart = useCallback((generations: number[]) => {
-    setResult(null);
-    load(generations);
-  }, [load]);
+  const handleStart = useCallback(
+    (generations: number[], selectedMode: GameMode) => {
+      setResult(null);
+      setIsGameOver(false);
+      setMode(selectedMode);
+      load(generations);
+    },
+    [load]
+  );
 
-  const handleFinish = useCallback((correctCount: number, matchTotal: number, elapsedSeconds: number) => {
-    setResult({ correctCount, total: matchTotal, elapsedSeconds });
+  const handleFinish = useCallback(
+    (correctCount: number, matchTotal: number, elapsedSeconds: number) => {
+      setResult({ correctCount, total: matchTotal, elapsedSeconds });
+    },
+    []
+  );
+
+  const handleTimeout = useCallback(() => {
+    setIsGameOver(true);
   }, []);
 
   const handleBackToMenu = useCallback(() => {
     setResult(null);
+    setIsGameOver(false);
     reset();
   }, [reset]);
 
   const handlePlayAgain = useCallback(() => {
     window.location.reload();
   }, []);
+
+  const activePool = mode === "quick" ? selectQuickPool(pokemon) : pokemon;
 
   return (
     <main className="min-h-screen bg-page-light dark:bg-page-dark flex items-center justify-center px-4">
@@ -53,9 +73,16 @@ export default function Home() {
           </button>
         </div>
       )}
-      {status === "ready" && !result && (
-        <GameScreen pool={pokemon} onFinish={handleFinish} onBackToMenu={handleBackToMenu} />
+      {status === "ready" && !result && !isGameOver && (
+        <GameScreen
+          pool={activePool}
+          mode={mode}
+          onFinish={handleFinish}
+          onTimeout={handleTimeout}
+          onBackToMenu={handleBackToMenu}
+        />
       )}
+      {status === "ready" && isGameOver && <GameOverScreen onBackToMenu={handleBackToMenu} />}
       {status === "ready" && result && (
         <ResultsScreen
           correctCount={result.correctCount}

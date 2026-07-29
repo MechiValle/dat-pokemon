@@ -2,11 +2,6 @@
   "header": {
     "title": "Who's that Pokémon?"
   },
-  "welcome": {
-    "allGenerations": "All generations",
-    "generation": "Gen {{number}}",
-    "start": "Start"
-  },
   "loading": {
     "label": "Loading Pokémon…"
   },
@@ -31,6 +26,18 @@
     "tier3": { "title": "Gym Challenger", "description": "You're making progress. The Pokémon world is starting to make sense." },
     "tier4": { "title": "Veteran Trainer", "description": "You've battled through plenty of regions and it shows." },
     "tier5": { "title": "Walking Pokedex", "description": "Your Pokémon knowledge is impressive. Only the most obscure species can still surprise you." },
-    "tier6": { "title": "Pokemon Professor", "description": "Neurodiverse, I see. Your knowledge of Pokémon is legendary!" }
+    "tier6": { "title": "Pokemon Professor", "description": "Neurodiverse, I see." }
+  },
+
+  "welcome": {
+  "allGenerations": "All generations",
+  "generation": "Gen {{number}}",
+  "start": "Start",
+  "fullMode": "Full Pokédex",
+  "quickMode": "Quick Rounds"
+  },
+  "gameOver": {
+    "title": "Game Over",
+    "subtitle": "Next time, do it faster"
   }
 }
