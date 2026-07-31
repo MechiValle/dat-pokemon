@@ -9,7 +9,8 @@
     "placeholder": "Escribí un nombre...",
     "pass": "Pasar",
     "silhouetteAlt": "Silueta de Pokémon misterioso",
-    "backToMenu": "Volver al menú"
+    "backToMenu": "Volver al menú",
+    "playSound": "Reproducir sonido"
   },
   "results": {
     "correct": "correctas",
@@ -33,8 +34,13 @@
   "generation": "Gen {{number}}",
   "start": "Empezar",
   "fullMode": "Pokédex completa",
-  "quickMode": "Rondas rápidas"
-},
+  "quickMode": "Rondas rápidas",
+  "spritesMode": "Sprites",
+  "criesMode": "Canto",
+  "silhouetteMode": "Silueta",
+  "croppedMode": "Recorte",
+  "handicapCheckbox": "Jugar con asistencia"
+  },
   "gameOver": {
     "title": "Game Over",
     "subtitle": "Más rápido la próxima vez"

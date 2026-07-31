@@ -4,6 +4,9 @@ import { useState, useCallback, useRef } from "react";
 import { Pokemon } from "@/types/pokemon";
 import { Round, RoundStatus } from "@/types/round";
 import { shuffle } from "@/lib/shuffle";
+import { normalizeName } from "@/lib/normalizeName";
+import { isFuzzyMatch } from "@/lib/fuzzyMatch";
+
 
 export type MatchStatus = "playing" | "finished";
 
@@ -43,8 +46,8 @@ export function useGame(pool: Pokemon[]) {
   const submitGuess = useCallback(
     (name: string) => {
       if (!currentRound || isRevealed) return;
-      const isCorrect =
-        name.trim().toLowerCase() === currentRound.pokemon.name.toLowerCase();
+      
+      const isCorrect = isFuzzyMatch(name, currentRound.pokemon.name, pool.map((p) => p.name));
       resolveRound(isCorrect ? "correct" : "incorrect");
     },
     [currentRound, isRevealed, resolveRound]

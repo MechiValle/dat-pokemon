@@ -1,5 +1,3 @@
-import { Pokemon } from "@/types/pokemon";
-
 const BASE_URL = "https://pokeapi.co/api/v2";
 
 interface SpeciesListItem {
@@ -18,6 +16,10 @@ interface PokemonDetailResponse {
         front_default: string | null;
       };
     };
+  };
+  cries: {
+    latest: string | null;
+    legacy: string | null;
   };
 }
 
@@ -39,23 +41,26 @@ export async function fetchGenerationSpeciesList(
   const data: GenerationResponse = await response.json();
 
   return data.pokemon_species
-    .map((species) => ({
-      id: extractIdFromUrl(species.url),
-      name: species.name,
-    }))
+    .map((species) => ({ id: extractIdFromUrl(species.url), name: species.name }))
     .sort((a, b) => a.id - b.id);
 }
 
-export async function fetchPokemonSprite(id: number): Promise<string> {
+export async function fetchPokemonDetail(
+  id: number
+): Promise<{ spriteUrl: string; cryUrl: string | null }> {
   const response = await fetch(`${BASE_URL}/pokemon/${id}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch pokemon ${id}`);
   }
   const data: PokemonDetailResponse = await response.json();
-  const sprite = data.sprites.other["official-artwork"].front_default;
+  const spriteUrl = data.sprites.other["official-artwork"].front_default;
 
-  if (!sprite) {
+  if (!spriteUrl) {
     throw new Error(`No sprite found for pokemon ${id}`);
   }
-  return sprite;
+
+  return {
+    spriteUrl,
+    cryUrl: data.cries.latest ?? data.cries.legacy ?? null,
+  };
 }

@@ -9,7 +9,8 @@
     "placeholder": "Type a name...",
     "pass": "Pass",
     "silhouetteAlt": "Mystery Pokémon silhouette",
-    "backToMenu": "Back to menu"
+    "backToMenu": "Back to menu",
+    "playSound": "Play sound"
   },
   "results": {
     "correct": "correct",
@@ -34,7 +35,12 @@
   "generation": "Gen {{number}}",
   "start": "Start",
   "fullMode": "Full Pokédex",
-  "quickMode": "Quick Rounds"
+  "quickMode": "Quick Rounds",
+  "spritesMode": "Sprites",
+  "criesMode": "Cries",
+  "silhouetteMode": "Silhouette",
+  "croppedMode": "Cropped",
+  "handicapCheckbox": "Play with handicap"
   },
   "gameOver": {
     "title": "Game Over",

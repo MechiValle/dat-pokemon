@@ -9,6 +9,7 @@ interface AutocompleteInputProps {
   onSubmit: (name: string) => void;
   onPass: () => void;
   disabled?: boolean;
+  showSuggestions?: boolean;
 }
 
 const MAX_SUGGESTIONS = 5;
@@ -19,6 +20,7 @@ export default function AutocompleteInput({
   onSubmit,
   onPass,
   disabled,
+  showSuggestions = true,
 }: AutocompleteInputProps) {
   const { t } = useTranslation();
   const [value, setValue] = useState("");
@@ -27,7 +29,7 @@ export default function AutocompleteInput({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const suggestions =
-    debouncedValue.trim().length === 0
+    !showSuggestions || debouncedValue.trim().length === 0
       ? []
       : pokemonNames
           .filter((name) => name.toLowerCase().startsWith(debouncedValue.trim().toLowerCase()))
@@ -50,6 +52,14 @@ export default function AutocompleteInput({
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (!showSuggestions) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSelect(value);
+      }
+      return;
+    }
+
     if (suggestions.length === 0) return;
 
     if (e.key === "ArrowDown") {
@@ -93,7 +103,7 @@ export default function AutocompleteInput({
           {t("game.pass")}
         </button>
       </div>
-      {suggestions.length > 0 && (
+      {showSuggestions && suggestions.length > 0 && (
         <ul
           role="listbox"
           className="absolute left-0 right-0 top-full mt-2 rounded-lg bg-screen-light-inner dark:bg-screen-dark overflow-hidden shadow-lg z-10"

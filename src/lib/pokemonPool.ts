@@ -1,6 +1,8 @@
 import { Pokemon } from "@/types/pokemon";
-import { fetchGenerationSpeciesList, fetchPokemonSprite } from "./pokeapi";
+import { fetchGenerationSpeciesList, fetchPokemonDetail } from "./pokeapi";
 import { getCachedGeneration, setCachedGeneration } from "./cache";
+import { preloadImage } from "./preloadImage";
+import { computeSpriteSamples } from "./spriteSamples";
 
 export type ProgressCallback = (loaded: number, total: number) => void;
 
@@ -45,25 +47,29 @@ export async function loadGenerations(
 
   const speciesLists = await Promise.all(
     generationsToFetch.map((generation) =>
-      fetchGenerationSpeciesList(generation).then((species) => ({
-        generation,
-        species,
-      }))
+      fetchGenerationSpeciesList(generation).then((species) => ({ generation, species }))
     )
   );
 
-  const cachedCount = [...cachedByGeneration.values()].reduce(
-    (sum, list) => sum + list.length,
-    0
-  );
-  const toFetchCount = speciesLists.reduce(
-    (sum, entry) => sum + entry.species.length,
-    0
-  );
-  const total = cachedCount + toFetchCount;
+  const cachedPokemon = [...cachedByGeneration.values()].flat();
+  const toFetchCount = speciesLists.reduce((sum, entry) => sum + entry.species.length, 0);
+  const total = cachedPokemon.length + toFetchCount;
 
-  let loaded = cachedCount;
+  let loaded = 0;
   onProgress?.(loaded, total);
+
+  await fetchInBatches(
+    cachedPokemon,
+    SPRITE_FETCH_CONCURRENCY,
+    async (p) => {
+      await preloadImage(p.spriteUrl);
+      return null;
+    },
+    () => {
+      loaded += 1;
+      onProgress?.(loaded, total);
+    }
+  );
 
   const freshlyFetched: Pokemon[] = [];
 
@@ -72,12 +78,15 @@ export async function loadGenerations(
       species,
       SPRITE_FETCH_CONCURRENCY,
       async (entry) => {
-        const spriteUrl = await fetchPokemonSprite(entry.id);
+        const detail = await fetchPokemonDetail(entry.id);
+        const spriteSamples = await computeSpriteSamples(detail.spriteUrl);
         const pokemon: Pokemon = {
           id: entry.id,
           name: entry.name,
-          spriteUrl,
+          spriteUrl: detail.spriteUrl,
+          cryUrl: detail.cryUrl,
           generation,
+          spriteSamples,
         };
         return pokemon;
       },
@@ -91,7 +100,5 @@ export async function loadGenerations(
     freshlyFetched.push(...generationPokemon);
   }
 
-  return [...cachedByGeneration.values(), freshlyFetched]
-    .flat()
-    .sort((a, b) => a.id - b.id);
+  return [...cachedPokemon, ...freshlyFetched].sort((a, b) => a.id - b.id);
 }

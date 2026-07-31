@@ -1,15 +1,22 @@
-"use client";
+'use client';
 
-import { useState, useCallback } from "react";
-import { useTranslation } from "react-i18next";
-import { useGenerationPool } from "@/hooks/useGenerationPool";
-import { GameMode } from "@/types/gameMode";
-import { selectQuickPool, DEFAULT_QUICK_ROUND_COUNT, QuickRoundCount } from "@/lib/quickRounds";
-import WelcomeScreen from "@/components/WelcomeScreen";
-import LoadingScreen from "@/components/LoadingScreen";
-import GameScreen from "@/components/GameScreen";
-import ResultsScreen from "@/components/ResultsScreen";
-import GameOverScreen from "@/components/GameOverScreen";
+import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useGenerationPool } from '@/hooks/useGenerationPool';
+import { GameMode } from '@/types/gameMode';
+import { RoundSource } from '@/types/roundSource';
+import { SpriteMode } from '@/types/spriteMode';
+import { HandicapMode } from '@/types/handicapMode';
+import {
+  selectQuickPool,
+  DEFAULT_QUICK_ROUND_COUNT,
+  QuickRoundCount,
+} from '@/lib/quickRounds';
+import WelcomeScreen, { StartOptions } from '@/components/WelcomeScreen';
+import LoadingScreen from '@/components/LoadingScreen';
+import GameScreen from '@/components/GameScreen';
+import ResultsScreen from '@/components/ResultsScreen';
+import GameOverScreen from '@/components/GameOverScreen';
 
 interface MatchResult {
   correctCount: number;
@@ -20,27 +27,35 @@ interface MatchResult {
 export default function Home() {
   const { t } = useTranslation();
   const { status, pokemon, loaded, total, load, reset } = useGenerationPool();
-  const [mode, setMode] = useState<GameMode>("quick");
-  const [roundCount, setRoundCount] = useState<QuickRoundCount>(DEFAULT_QUICK_ROUND_COUNT);
+  const [mode, setMode] = useState<GameMode>('quick');
+  const [roundCount, setRoundCount] = useState<QuickRoundCount>(
+    DEFAULT_QUICK_ROUND_COUNT,
+  );
+  const [roundSource, setRoundSource] = useState<RoundSource>('sprites');
+  const [spriteMode, setSpriteMode] = useState<SpriteMode>('silhouette');
+  const [handicapMode, setHandicapMode] = useState<HandicapMode>('handicap');
   const [result, setResult] = useState<MatchResult | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
 
   const handleStart = useCallback(
-    (generations: number[], selectedMode: GameMode, selectedRoundCount: QuickRoundCount) => {
+    (options: StartOptions) => {
       setResult(null);
       setIsGameOver(false);
-      setMode(selectedMode);
-      setRoundCount(selectedRoundCount);
-      load(generations);
+      setMode(options.mode);
+      setRoundCount(options.roundCount);
+      setRoundSource(options.roundSource);
+      setSpriteMode(options.spriteMode);
+      setHandicapMode(options.handicapMode);
+      load(options.generations);
     },
-    [load]
+    [load],
   );
 
   const handleFinish = useCallback(
     (correctCount: number, matchTotal: number, elapsedSeconds: number) => {
       setResult({ correctCount, total: matchTotal, elapsedSeconds });
     },
-    []
+    [],
   );
 
   const handleTimeout = useCallback(() => {
@@ -57,35 +72,42 @@ export default function Home() {
     window.location.reload();
   }, []);
 
-  const activePool = mode === "quick" ? selectQuickPool(pokemon, roundCount) : pokemon;
+  const activePool =
+    mode === 'quick' ? selectQuickPool(pokemon, roundCount) : pokemon;
 
   return (
-    <main className="min-h-screen bg-page-light dark:bg-page-dark flex items-center justify-center px-4">
-      {status === "idle" && <WelcomeScreen onStart={handleStart} />}
-      {status === "loading" && <LoadingScreen loaded={loaded} total={total} />}
-      {status === "error" && (
-        <div className="flex flex-col items-center gap-4 text-bezel dark:text-white">
-          <p className="text-sm">{t("error.message")}</p>
+    <main className='min-h-screen bg-page-light dark:bg-page-dark flex items-center justify-center px-4'>
+      {status === 'idle' && <WelcomeScreen onStart={handleStart} />}
+      {status === 'loading' && <LoadingScreen loaded={loaded} total={total} />}
+      {status === 'error' && (
+        <div className='flex flex-col items-center gap-4 text-bezel dark:text-white'>
+          <p className='text-sm'>{t('error.message')}</p>
           <button
-            type="button"
+            type='button'
             onClick={() => window.location.reload()}
-            className="rounded-lg bg-accent text-bezel font-bold text-sm px-6 py-2.5"
+            className='rounded-lg bg-accent text-bezel font-bold text-sm px-6 py-2.5'
           >
-            {t("error.retry")}
+            {t('error.retry')}
           </button>
         </div>
       )}
-      {status === "ready" && !result && !isGameOver && (
+      {status === 'ready' && !result && !isGameOver && (
         <GameScreen
           pool={activePool}
+          fullPool={pokemon}
           mode={mode}
+          roundSource={roundSource}
+          spriteMode={spriteMode}
+          handicapMode={handicapMode}
           onFinish={handleFinish}
           onTimeout={handleTimeout}
           onBackToMenu={handleBackToMenu}
         />
       )}
-      {status === "ready" && isGameOver && <GameOverScreen onBackToMenu={handleBackToMenu} />}
-      {status === "ready" && result && (
+      {status === 'ready' && isGameOver && (
+        <GameOverScreen onBackToMenu={handleBackToMenu} />
+      )}
+      {status === 'ready' && result && (
         <ResultsScreen
           correctCount={result.correctCount}
           total={result.total}
