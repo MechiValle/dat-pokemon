@@ -6,6 +6,8 @@ import { Round, RoundStatus } from "@/types/round";
 import { shuffle } from "@/lib/shuffle";
 import { normalizeName } from "@/lib/normalizeName";
 import { isFuzzyMatch } from "@/lib/fuzzyMatch";
+import { playSound } from "@/lib/sounds";
+
 
 
 export type MatchStatus = "playing" | "finished";
@@ -33,6 +35,7 @@ export function useGame(pool: Pokemon[]) {
         next[currentIndex] = { ...next[currentIndex], status };
         return next;
       });
+      playSound(status === "correct" ? "correct" : "incorrect");
       setIsRevealed(true);
 
       advanceTimeout.current = setTimeout(() => {

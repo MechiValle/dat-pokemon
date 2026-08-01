@@ -78,6 +78,7 @@ export default function CryChoices({
               type='button'
               onClick={() => handleChoice(choice)}
               disabled={isRevealed}
+              data-skip-click-sound
               className={`rounded-xl bg-black/5 dark:bg-white/5 p-2 flex items-center justify-center ${
                 isCorrectChoice
                   ? 'ring-2 ring-accent'
@@ -100,6 +101,7 @@ export default function CryChoices({
         type='button'
         onClick={onPass}
         disabled={isRevealed}
+        data-skip-click-sound
         className='rounded-lg bg-pass text-white text-sm font-bold px-6 py-2 disabled:opacity-50'
       >
         {t('game.pass')}

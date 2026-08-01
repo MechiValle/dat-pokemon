@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Manrope, Press_Start_2P } from "next/font/google";
-import "./globals.css";
 import I18nProvider from "@/i18n/I18nProvider";
+import ClickSoundListener from "@/components/ClickSoundListener";
+import "./globals.css";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -27,7 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${manrope.variable} ${pressStart2P.variable} font-sans`}>
-        <I18nProvider>{children}</I18nProvider>
+        <I18nProvider>
+          {children}
+          <ClickSoundListener />
+        </I18nProvider>
       </body>
     </html>
   );
