@@ -1,3 +1,5 @@
+## Who's that Pokémon?
+
 Game built with React and TypeScript where players must guess which Pokémon is being referenced from silhouettes, cries, and cropped/zoomed images.
 
 ## Features
