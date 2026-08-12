@@ -1,4 +1,4 @@
-Game built with React and TypeScript where players must determine which anime is newer or older.
+Game built with React and TypeScript where players must guess which Pokémon is being referenced from silhouettes, cries, and cropped/zoomed images.
 
 ## Features
 
@@ -12,7 +12,7 @@ Game built with React and TypeScript where players must determine which anime is
 
 - React
 - TypeScript
-- Vite
+- Next.JS
 - PokeAPI
 
 ## Live Demo
